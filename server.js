@@ -4,7 +4,7 @@
     const cookieParser = require('cookie-parser');
 
     var fs = require('fs');
-    
+
     // fetir16164@maillei.net, Carucel1, tot Dec 22, 2020
 
     const play = fs.readFileSync('app/play.html', 'utf8');
@@ -19,7 +19,7 @@
     app.use(cookieParser());
 
     var MongoClient = require('mongodb').MongoClient;
-    var url = "mongodb://127.0.0.1:27017/mydb";
+    var url = "mongodb+srv://databaseuser:uPmQs9eKrp3BBmUa@mycluster.jcyct.azure.mongodb.net/mydb?retryWrites=true&w=majority";
     var db = await MongoClient.connect(url, {useUnifiedTopology: true});
     var dbo = db.db("mydb");
     var results = dbo.collection("results");
