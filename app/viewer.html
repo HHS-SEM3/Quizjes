@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0
+        }
+
+        div {
+            font-size: 20vh;
+            width: 100%; 
+            text-align: center;
+            vertical-align: middle;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="opts" style="width:100%; height:100%; display: flex; flex-direction: column;">
+        <div id="opt1">A: ##1##</div>
+        <div id="opt2">B: ##2##</div>
+        <div id="opt3">C: ##3##</div>
+        <div id="opt4">D: ##4##</div>
+    </div>
+    <script>
+        let a = ##aantal##;
+        for (i = 0; i < 4; i+=1) {
+            let obj = document.getElementById("opt" + (i + 1));
+            obj.style.display = (i < a) ? "initial" : "none";
+            obj.style.height = 100 / a + "%";
+        }
+    </script>
+</body>
+
+</html>

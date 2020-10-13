@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Quizjes</title>
+    <script src="https://alcdn.msauth.net/browser/2.1.0/js/msal-browser.min.js" crossorigin="anonymous"></script>
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0
+        }
+
+        button {
+            font-size: 10vw;
+            width: 100%; 
+            background-color: white;
+        }
+
+        .fade {
+            animation: fadeInOut 1s linear forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% { background-color: red; }
+            100% { background-color: white; }
+        }
+    </style>
+</head>
+
+<body>
+    <button style="position:fixed; height:100%; top:0;   left:0;" id="start" onclick="start()">Inloggen</button>
+    <!-- <div id="profile-div"></div> -->
+    <div id="opts" style="width:100%; height:100%; display: none; flex-direction: column;">
+        <button id="opt1" onclick="senddata('1');">A</button>
+        <button id="opt2" onclick="senddata('2');">B</button>
+        <button id="opt3" onclick="senddata('3');">C</button>
+        <button id="opt4" onclick="senddata('4');">D</button>
+    </div>
+    <div id="janee" style="width:100%; height:100%; display: none; flex-direction: column;">
+        <button id="ja" style="height:50%" onclick="senddata('ja');">Ja</button>
+        <button id="nee" style="height:50%" onclick="senddata('nee');">Nee</button>
+    </div>
+    <div id="textinput" style="width:100%; height:100%; display: none; flex-direction: column;">
+        <input type="text" id="tekst" style="height:80%"></input>
+        <button id="opstuur" style="height:20%" onclick="senddata(document.getElementById('tekst').value);">Nee</button>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+    <script>
+        var client_info = "";
+        if (window.location.hash) {
+            client_info = window.location.hash.match(/client_info=([^&]*)/)[1]; // Fragment exists
+        }
+        var naam = "";
+        // https://docs.microsoft.com/en-us/azure/active-directory/develop/tutorial-v2-javascript-spa
+        const msalConfig = {
+            auth: {
+                clientId: "04b4c94f-32c5-4425-b69c-45b0d83c4286",
+                authority: "https://login.microsoftonline.com/organizations",
+                redirectUri: "##REDIRECT##",
+            },
+            cache: {
+                cacheLocation: "sessionStorage", // This configures where your cache will be stored
+                storeAuthStateInCookie: false, // Set this to "true" if you are having issues on IE11 or Edge
+            },
+            system: {
+                loggerOptions: {
+                    loggerCallback: (level, message, containsPii) => {
+                        if (containsPii)
+                            return;
+                        switch (level) {
+                            case msal.LogLevel.Error:
+                                console.error(message);
+                                return;
+                            case msal.LogLevel.Info:
+                                console.info(message);
+                                return;
+                            case msal.LogLevel.Verbose:
+                                console.debug(message);
+                                return;
+                            case msal.LogLevel.Warning:
+                                console.warn(message);
+                                return;
+                        }
+                    }
+                }
+            }
+        };
+
+        const myMSALObj = new msal.PublicClientApplication(msalConfig);
+        var naam = "";
+        myMSALObj.handleRedirectPromise().then((resp) => {
+            naam = "";
+            if (resp !== null)
+                namen = [resp.account.username];
+            else {
+                const currentAccounts = myMSALObj.getAllAccounts();
+                if (currentAccounts === null)
+                    namen = [];
+                else
+                    namen = currentAccounts.map((a) => a.username);
+            }
+            for (let n of namen) {
+                if (n.endsWith("hhs.nl") && n.includes("@")) {
+                    naam = n.substring(0, n.indexOf("@"));
+                    break;
+                }
+            }
+            if (naam !== "") {
+                document.getElementById("start").innerText = "Start";
+                entergame();
+            }
+        }).catch(err => console.error(err));
+
+        function start() {
+            if (naam == "")
+                myMSALObj.loginRedirect({ scopes: ["User.Read"] });
+            else
+                entergame().then((b) => { if (!b) alert("Er is nu geen quiz!"); });
+        }
+
+        function senddata(data) {
+            fetch("/data?name=" + naam + "&client_info" + client_info,
+                {
+                    method: 'POST', 
+                    body: data
+                }).then(prefinish);
+        }
+
+        function prefinish() {
+            finish();
+            document.getElementById("start").disabled = true;
+        }
+
+        function finish() {
+            document.getElementById("start").disabled = false;
+            document.getElementById("opts").style.display = 'none';
+            document.getElementById("janee").style.display = 'none';
+            document.getElementById("start").style.display = 'initial';
+        }
+        
+        function entergame() {
+            return fetch("/game")
+            .then((out) => out.text())
+            .then((out) => {
+                let game = JSON.parse(out);
+                let togo = parseInt(game.started) + parseInt(game.maxtime) - (new Date()).getTime();
+                if (togo < 0)
+                    return false;
+                else {
+                    let o = parseInt(game.kind);
+                    if (o == 100) {
+                        document.getElementById("janee").style.display = 'flex';
+                    } else {
+                        for (i = 0; i < 4; i+=1) {
+                            let obj = document.getElementById("opt" + (i + 1));
+                            obj.style.display = (i < o) ? "initial" : "none";
+                            obj.style.height = 100 / o + "%";
+                        }
+                        document.getElementById("opts").style.display = 'flex';
+                    }
+                    setTimeout(finish, togo); 
+                    document.getElementById("start").style.display = 'none';
+                    return true;
+                }
+            })
+            .catch(err => { throw err });
+        }
+    </script>
+</body>
+
+</html>
