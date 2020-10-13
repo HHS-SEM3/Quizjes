@@ -117,6 +117,6 @@
     
     get('/adminlogin', (req, res) => res.send(adminlogin));
 
-    app.listen(80);
+    app.listen(process.env.PORT);
     console.log("Listening");
 })();
