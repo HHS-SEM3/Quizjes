@@ -1,17 +1,10 @@
 (async () => {
-    const production = process.env.NODE_ENV.replace(/\W/g, '') == 'production';
-
     const {performance} = require('perf_hooks');
     const express = require('express');
     const cookieParser = require('cookie-parser');
 
     var fs = require('fs');
-
-    var http = require('http');
-    var https = require('https');
-
-    var privateKey  = fs.readFileSync('private.key', 'utf8');
-    var certificate = fs.readFileSync('certificate.crt', 'utf8');
+    
     // fetir16164@maillei.net, Carucel1, tot Dec 22, 2020
 
     const play = fs.readFileSync('app/play.html', 'utf8');
@@ -21,8 +14,6 @@
     const nextquestioncomposer = fs.readFileSync('app/nextquestioncomposer.html', 'utf8');
 
     const secret = fs.readFileSync('secret', 'utf8');
-
-    var credentials = {key: privateKey, cert: certificate};
 
     const app = express();
     app.use(cookieParser());
@@ -126,20 +117,6 @@
     
     get('/adminlogin', (req, res) => res.send(adminlogin));
 
-    const forwardapp = express();
-    forwardapp.use(express.static('app'));
-    forwardapp.get('/', (req, res) => {
-        console.log("REDIRECT FROM HTTP");
-        res.redirect('https://' + req.headers.host + req.url);
-    }); 
-    forwardapp.get('/.well-known/pki-validation/37541D092EE2F2A096D138F8477AE310.txt', (req, res) => {
-        var ret  = fs.readFileSync('app/.well-known/pki-validation/37541D092EE2F2A096D138F8477AE310.txt', 'utf8');
-        res.send(ret);
-    }); 
-    var httpServer = http.createServer(forwardapp);
-    var httpsServer = https.createServer(credentials, app);
-
-    httpServer.listen(production ? 80 : 8080);
-    httpsServer.listen(production ? 443 : 4430);
+    app.listen(80);
     console.log("Listening");
 })();
