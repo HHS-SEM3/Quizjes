@@ -9,11 +9,17 @@
     "cookie-parser": "^1.4.5",
     "cross-env": "^7.0.2",
     "express": "^4.17.1",
-    "mongodb": "latest",
+    "mongodb": "3.6.2",
     "perf_hooks": "latest",
     "socket.io": "^2.3.0"
   },
   "devDependencies": {
-    "nodemon": "^2.0.3"
+    "nodemon": "^2.0.3",
+    "cookie-parser": "^1.4.5",
+    "cross-env": "^7.0.2",
+    "express": "^4.17.1",
+    "mongodb": "3.6.2",
+    "perf_hooks": "latest",
+    "socket.io": "^2.3.0"
   }
 }
