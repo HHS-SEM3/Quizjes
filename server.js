@@ -21,6 +21,11 @@
     const app = express();
     app.use(cookieParser());
 
+    app.use(function(req, res, next) {
+        res.header("Access-Control-Allow-Origin", "*"); 
+        next();
+      });
+
     var MongoClient = require('mongodb').MongoClient;
     var url = "mongodb+srv://databaseuser:uPmQs9eKrp3BBmUa@mycluster.jcyct.azure.mongodb.net/mydb?retryWrites=true&w=majority";
     var db = await MongoClient.connect(url, {useUnifiedTopology: true});
