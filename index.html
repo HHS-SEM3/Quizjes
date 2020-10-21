@@ -5,21 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
     <title>Quizjes</title>
-    
+    <style>
+        label, input, button {
+            box-sizing: border-box; 
+            width: 100%;
+            display:block;
+        }
+    </style>
 </head>
 
-<body style="position: relative;">
+<body style="height:100vh; position: relative;">
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 400px;">
-        <label style="width: 100%;display:block;" for="studentid">Student ID: </label>
-        <input style="width: 100%;display:block;" type="text" id="studentid"></input>
-        <button style="width: 100%;display:block;" onclick="f()">Login</button>
+        <label for="studentid">Student ID: </label>
+        <input type="text" id="studentid"></input>
+        <button onclick="f()">Login</button>
     </div>
     <script>
-        let getCookie = function(name) {
-            var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-            if (match) return match[2];
-            return null;
-        }
+        function getCookie(name) { var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)')); if (match) return match[2]; else return null; }
         if (getCookie("studentnummer") != null)
             window.location.replace("/play");
         function f() {
