@@ -10,7 +10,7 @@
 
     const nextquestioncomposer = ""; // fs.readFileSync('app/nextquestioncomposer.html', 'utf8');
 
-    const secret = fs.readFileSync('secret', 'utf8');
+    const secret = process.env.secret; // fs.readFileSync('secret', 'utf8');
 
     const app = express();
     var http = require('http').createServer(app);
