@@ -44,9 +44,10 @@
         <button id="ja" style="height:50%" onclick="senddata('ja');">Ja</button>
         <button id="nee" style="height:50%" onclick="senddata('nee');">Nee</button>
     </div>
-    <div id="textinput" style="width:100%; height:100%; display: none; flex-direction: column;">
-        <input type="text" id="tekst" style="height:80%"></input>
-        <button id="opstuur" style="height:20%" onclick="senddata(document.getElementById('tekst').value);document.getElementById('tekst').value='';">Nee</button>
+    <div id="woorden" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 400px;">
+        <label style="box-sizing: border-box; width: 100%;display:block;" for="tekst">Woord: </label>
+        <input style="box-sizing: border-box; width: 100%;display:block;" type="text" id="tekst"></input>
+        <button style="box-sizing: border-box; width: 100%;display:block;" id="opstuur" style="height:20%" onclick="senddata(document.getElementById('tekst').value);document.getElementById('tekst').value='';">Nee</button>
     </div>
     <script>
         function getCookie(name) { var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)')); if (match) return match[2]; else return null; }
@@ -55,7 +56,7 @@
   
         function senddata(data) {
             socket.emit('send', getCookie("studentnummer"), data);
-            if (document.getElementById("textinput").style.display == "none")
+            if (document.getElementById("woorden").style.display == "none")
                 end();
         }
 
@@ -63,7 +64,7 @@
             document.getElementById("wacht").style.display = 'initial';
             document.getElementById("opts").style.display = 'none';
             document.getElementById("janee").style.display = 'none';
-            document.getElementById("textinput").style.display = 'none';
+            document.getElementById("woorden").style.display = 'none';
         }
             
         socket.on('end', end);
@@ -72,8 +73,8 @@
             document.getElementById("wacht").style.display = 'none';
             if (o == "janee")
                 document.getElementById("janee").style.display = 'flex';
-            else if (o == "textinput")
-                document.getElementById("textinput").style.display = 'flex';
+            else if (o == "woorden")
+                document.getElementById("woorden").style.display = 'flex';
             else {
                 if (o == "ab") o = 2;
                 else if (o == "abc") o = 3;

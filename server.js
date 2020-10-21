@@ -21,7 +21,7 @@
 
     // kind = "": no game
     // kind = "janee": ja/nee game
-    // kind = "textinput": willekeurige tekst
+    // kind = "woorden": woorden -> steeds opnieuw
     // kind = "abc": a b c
     // kind = "abcd": a b c d
 
@@ -74,7 +74,7 @@
 
     app.get('/viewer', 
         async (req, res) => {
-            let lastgame = (await games.find().sort({start: 1}).limit(1).toArray())[0];
+            let lastgame = (await games.find().sort({start: -1}).limit(1).toArray())[0];
             let datas = await results.aggregate([
                 {$match: {"time": {$gt: lastgame.start}}},
                 {$sort: {"time": 1}},
