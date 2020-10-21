@@ -6,6 +6,9 @@
     var fs = require('fs');
 
     // fetir16164@maillei.net, Carucel1, tot Dec 22, 2020
+    // databaseuser
+    // uPmQs9eKrp3BBmUa
+
 
     const play = fs.readFileSync('app/play.html', 'utf8');
     const viewer  = fs.readFileSync('app/viewer.html', 'utf8');
@@ -44,7 +47,7 @@
         app.get(url, async (req, res) => logme(req, async () => func(req, res)));
     }
 
-    get('/', (req, res) => res.send(play.replace("##REDIRECT##", true ? "https://94.209.210.86/" : "https://localhost:4430/"))); 
+    get('/', (req, res) => res.send(play)); 
 
     function addmetadata(d, req) {
         return Object.assign({}, d, {time: (new Date()).getTime(), ip: req.connection.remoteAddress});
