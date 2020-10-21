@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Quizjes</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js" integrity="sha512-AcZyhRP/tbAEsXCCGlziPun5iFvcSUpEz2jKkx0blkYKbxU81F+iq8FURwPn1sYFeksJ+sDDrI5XujsqSobWdQ==" crossorigin="anonymous"></script>
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0
+        }
+
+        button {
+            font-size: 10vw;
+            width: 100%; 
+            background-color: white;
+        }
+
+        .fade {
+            animation: fadeInOut 1s linear forwards;
+        }
+
+        @keyframes fadeInOut {
+            0% { background-color: red; }
+            100% { background-color: white; }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wacht" style="width:100%; height:100%;">Wacht...</div>
+    <div id="opts" style="width:100%; height:100%; display: none; flex-direction: column;">
+        <button id="opt1" onclick="senddata('A');">A</button>
+        <button id="opt2" onclick="senddata('B');">B</button>
+        <button id="opt3" onclick="senddata('C');">C</button>
+        <button id="opt4" onclick="senddata('D');">D</button>
+    </div>
+    <div id="janee" style="width:100%; height:100%; display: none; flex-direction: column;">
+        <button id="ja" style="height:50%" onclick="senddata('ja');">Ja</button>
+        <button id="nee" style="height:50%" onclick="senddata('nee');">Nee</button>
+    </div>
+    <div id="textinput" style="width:100%; height:100%; display: none; flex-direction: column;">
+        <input type="text" id="tekst" style="height:80%"></input>
+        <button id="opstuur" style="height:20%" onclick="senddata(document.getElementById('tekst').value);document.getElementById('tekst').value='';">Nee</button>
+    </div>
+    <script>
+        let getCookie = function(name) {
+            var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            if (match) return match[2];
+            return null;
+        }
+
+        var socket = io();
+  
+        function senddata(data) {
+            socket.emit('send', getCookie("studentnummer"), data);
+            if (document.getElementById("textinput").style.display == "none")
+                end();
+        }
+
+        function end() {
+            document.getElementById("wacht").style.display = 'initial';
+            document.getElementById("opts").style.display = 'none';
+            document.getElementById("janee").style.display = 'none';
+            document.getElementById("textinput").style.display = 'none';
+        }
+            
+        socket.on('end', end);
+
+        socket.on('start', function(o) {
+            document.getElementById("wacht").style.display = 'none';
+            if (o == "janee")
+                document.getElementById("janee").style.display = 'flex';
+            else if (o == "textinput")
+                document.getElementById("textinput").style.display = 'flex';
+            else {
+                if (o == "ab") o = 2;
+                else if (o == "abc") o = 3;
+                else if (o == "abcd") o = 4;
+                for (i = 0; i < 4; i+=1) {
+                    let obj = document.getElementById("opt" + (i + 1));
+                    obj.style.display = (i < o) ? "initial" : "none";
+                    obj.style.height = 100 / o + "%";
+                }
+                document.getElementById("opts").style.display = 'flex';
+            }
+        });
+        
+    </script>
+</body>
+
+</html>

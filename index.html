@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Quizjes</title>
+    
+</head>
+
+<body>
+    <input type="text" id="studentid"></input>
+    <button onclick="f()"></button>
+    <script>
+        let getCookie = function(name) {
+            var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+            if (match) return match[2];
+            return null;
+        }
+        if (getCookie("studentnummer") != null)
+            window.location.replace("/play");
+        function f() {
+            let val = document.getElementById("studentid").value.trim();
+            if (val.match(/\d{4,8}/) == null)
+                alert("Dit is geen studentnummer!");
+            else {
+                document.cookie = 'studentnummer=' + val + '; expires=max-age; path=/'
+                window.location.replace("/play");
+            }
+        }
+    </script>
+</body>
+</html>
