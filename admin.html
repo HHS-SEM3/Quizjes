@@ -4,8 +4,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js" integrity="sha512-AcZyhRP/tbAEsXCCGlziPun5iFvcSUpEz2jKkx0blkYKbxU81F+iq8FURwPn1sYFeksJ+sDDrI5XujsqSobWdQ==" crossorigin="anonymous"></script>
 </head>
 <body>
+    <label for="secret">Geheim: </label>
     <input id="secret" type="password"></input>
     <button onclick="f()">Set admin password</button>
+    <label for="secret">Soort: </label>
     <input id="kind" type="text"></input>
     <button onclick="socket.emit('start', getCookie('secret'), document.getElementById('kind').value);window.location.href = '/viewer';">Start!</button>
     <button onclick="socket.emit('end', getCookie('secret'), document.getElementById('kind').value)">End!</button>
