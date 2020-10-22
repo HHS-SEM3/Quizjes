@@ -11,7 +11,8 @@
     "express": "^4.17.1",
     "mongodb": "3.6.2",
     "perf_hooks": "latest",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "cors": "latest"
   },
   "devDependencies": {
     "nodemon": "^2.0.3",
@@ -20,6 +21,7 @@
     "express": "^4.17.1",
     "mongodb": "3.6.2",
     "perf_hooks": "latest",
-    "socket.io": "^2.3.0"
+    "socket.io": "^2.3.0",
+    "cors": "latest"
   }
 }
