@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js" integrity="sha512-AcZyhRP/tbAEsXCCGlziPun5iFvcSUpEz2jKkx0blkYKbxU81F+iq8FURwPn1sYFeksJ+sDDrI5XujsqSobWdQ==" crossorigin="anonymous"></script>
     <style>
         label, input, button {
             box-sizing: border-box; 
@@ -14,7 +13,7 @@
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 400px;">
         <label for="secret">Geheim: </label>
         <input id="secret" type="password"></input>
-        <button onclick="f()">Set admin password</button>
+        <button id="go" onclick="f()">Set admin password</button>
     </div>
     <script>
         function getCookie(name) { var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)')); if (match) return match[2]; else return null; }
@@ -25,7 +24,12 @@
         }
         if (getCookie("secret") != null)
             window.location.replace("/new");
-        var socket = io();
+        
+        document.querySelector("#secret").addEventListener("keyup", event => {
+            if(event.key !== "Enter") return; 
+            document.querySelector("#go").click(); 
+            event.preventDefault(); 
+        });
     </script>
 </body>
 

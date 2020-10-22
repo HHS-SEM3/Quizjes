@@ -99,6 +99,7 @@
         };
     }
 
+    app.get("/", reqreplace("index.html")); 
     for (let route of ["index", "play", "adminlogin", "new", "timer"])
         app.get(new RegExp("^" + "\\/" + route + "(\\.html)?$"), reqreplace(route + ".html")); 
     
