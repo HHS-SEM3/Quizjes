@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js" integrity="sha512-AcZyhRP/tbAEsXCCGlziPun5iFvcSUpEz2jKkx0blkYKbxU81F+iq8FURwPn1sYFeksJ+sDDrI5XujsqSobWdQ==" crossorigin="anonymous"></script>
+    <style>
+        label, input, button {
+            box-sizing: border-box; 
+            width: 100%;
+            display:block;
+        }
+    </style>
+</head>
+<body>
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 400px;">
+        <button onclick="stop()">Stop</button>
+        <div id="timer"></div>
+    </div>
+    <script>
+        function getCookie(name) { var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)')); if (match) return match[2]; else return null; }
+
+        if (getCookie("secret") == null) window.location.replace("/adminlogin");
+        else {
+            var socket = io();
+            var startTime = Date.now();
+            var ending = ###time###;
+
+            socket.emit('start', getCookie('secret'), '###time###'); 
+
+            var interval = setInterval(function() {
+                var elapsedTime = (Date.now() - startTime) / 1000;
+                document.getElementById("timer").innerHTML = (ending - elapsedTime).toFixed(1);
+                if (elapsedTime > ending)
+                    stop();
+            }, 100);
+
+        }
+
+        function stop() {
+            socket.emit('end', getCookie('secret'));
+            window.location.href = '/viewer';
+        }
+    </script>
+</body>
+
+</html>

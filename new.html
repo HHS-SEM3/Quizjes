@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        label, input, button {
+            box-sizing: border-box; 
+        }
+    </style>
+</head>
+<body>
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 400px;">
+        <input type="radio" name="choice" id="janee"> Ja/Nee
+        <input type="radio" name="choice" id="abc"> ABC
+        <input type="radio" name="choice" id="abcd"> ABCD
+        <input type="radio" name="choice" id="woorden"> woorden
+        <input style="width: 100%;" type="text" id="time" value="###time###"></input>
+        <button style="width: 100%;" onclick="f()">Start!</button>
+    </div>
+    <script>
+        function getCookie(name) { var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)')); if (match) return match[2]; else return null; }
+
+        if (getCookie("secret") == null) window.location.replace("/adminlogin");
+        else {
+            var socket = io();
+            for (const rb of document.querySelectorAll('input[name="choice"]')) rb.checked = false;
+            if ('###kind###' != '')
+                document.getElementById('###kind###').checked = true;
+            else
+                document.getElementById('abcd').checked = true;
+        }
+
+        function f() {
+            let kind;
+            for (const rb of document.querySelectorAll('input[name="choice"]')) if (rb.checked) kind = rb.id;
+            window.location.href = '/timer?kind=' + kind + '&time=' + document.getElementById("time").value;
+        }
+    </script>
+</body>
+
+</html>

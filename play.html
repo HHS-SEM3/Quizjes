@@ -33,7 +33,7 @@
 </head>
 
 <body>
-    <div id="wacht" style="width:100%; height:100%;display: flex;align-items: center;text-align: center;">...wacht...</div>
+    <div id="wacht" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); ">...wacht...</div>
     <div id="opts" style="width:100%; height:100%; display: none; flex-direction: column;">
         <button id="opt1" onclick="senddata('A');">A</button>
         <button id="opt2" onclick="senddata('B');">B</button>
@@ -44,7 +44,7 @@
         <button id="ja" style="height:50%" onclick="senddata('ja');">Ja</button>
         <button id="nee" style="height:50%" onclick="senddata('nee');">Nee</button>
     </div>
-    <div id="woorden" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 400px;">
+    <div id="woorden" style="display: none; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 400px;">
         <label style="box-sizing: border-box; width: 100%;display:block;" for="tekst">Woord: </label>
         <input style="box-sizing: border-box; width: 100%;display:block;" type="text" id="tekst"></input>
         <button style="box-sizing: border-box; width: 100%;display:block;" id="opstuur" style="height:20%" onclick="senddata(document.getElementById('tekst').value);document.getElementById('tekst').value='';">Nee</button>
@@ -66,15 +66,16 @@
             document.getElementById("janee").style.display = 'none';
             document.getElementById("woorden").style.display = 'none';
         }
-            
+        
         socket.on('end', end);
 
         socket.on('start', function(o) {
+            end();
             document.getElementById("wacht").style.display = 'none';
             if (o == "janee")
                 document.getElementById("janee").style.display = 'flex';
             else if (o == "woorden")
-                document.getElementById("woorden").style.display = 'flex';
+                document.getElementById("woorden").style.display = 'inherit';
             else {
                 if (o == "ab") o = 2;
                 else if (o == "abc") o = 3;

@@ -10,9 +10,11 @@
 
     const nextquestioncomposer = ""; // fs.readFileSync('app/nextquestioncomposer.html', 'utf8');
 
-    const secret = process.env.secret; // fs.readFileSync('secret', 'utf8');
+    const secret = process.env.secret || fs.readFileSync('secret', 'utf8'); 
 
     const app = express();
+    var cors = require('cors');
+    app.use(cors());
     var http = require('http').createServer(app);
     app.use(cookieParser());
     var io = require('socket.io')(http);
@@ -33,6 +35,7 @@
     var games = dbo.collection("games");
     
     io.on('connection', (socket) => {
+        console.log('a user connected');
         if (kind != "") socket.emit("start", kind);
         socket.on('send', (studentnummer, data) => {
             let i = {
@@ -50,7 +53,7 @@
                 if ("end" in Object.keys(lastgame))
                     return;
                 lastgame.end = (new Date()).getTime();
-                games.updateOne({ "_id" : lastgame._id }, lastgame).then(() => io.emit('end'));
+                games.updateOne({ "_id" : lastgame._id }, {"end": lastgame.end}).then(() => io.emit('end'));
             });
         });
         socket.on('start', (s, k) => {
@@ -68,11 +71,38 @@
         });
     });
 
-    app.get('/', (req, res) => res.sendFile("index.html", { root: '.' })); 
-    app.get('/play', (req, res) => res.sendFile("play.html", { root: '.' })); 
-    app.get('/admin', (req, res) => res.sendFile("admin.html", { root: '.' }));
+    var cache = new Map();
 
-    app.get('/viewer', 
+    function replaceAll(str, a, b) {
+        let prev = ""
+        while (prev != str) {
+            prev = str;
+            str = str.replace(a, b);
+        }
+        return str;
+    }
+
+    function reqreplace(fname) {
+        return (req, res) => {
+            console.log("GET " + req.url + " from " + req.ip);
+            res.set('Content-Type', 'text/html');
+            if (!cache.has(fname))
+                cache.set(fname, fs.readFileSync(fname, 'utf8'));
+            let str = cache.get(fname);
+            for (var propName in req.query) {
+                if (req.query.hasOwnProperty(propName)) {
+                    str = replaceAll(str, "###" + propName + "###", req.query[propName]);
+                }
+            }
+            str = replaceAll(str, /###[^#]+###/g, "");
+            res.send(str);
+        };
+    }
+
+    for (let route of ["index", "play", "adminlogin", "new", "timer"])
+        app.get(new RegExp("^" + "\\/" + route + "(\\.html)?$"), reqreplace(route + ".html")); 
+    
+    app.get(/\/viewer(\.html)?/, 
         async (req, res) => {
             let lastgame = (await games.find().sort({start: -1}).limit(1).toArray())[0];
             let datas = await results.aggregate([
@@ -99,11 +129,6 @@
     }
     app.get('/nextquestioncomposer', async (req, res) => res.send(access(req) ? nextquestioncomposer : "wrong secret"));
 
-
-    io.on('connection', (socket) => {
-    console.log('a user connected');
-    });
-
-    http.listen(process.env.PORT); // 8000
+    http.listen(process.env.PORT || 8000); 
     console.log("Listening");
 })();
