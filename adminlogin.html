@@ -19,7 +19,7 @@
         function getCookie(name) { var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)')); if (match) return match[2]; else return null; }
 
         function f(val) {
-            document.cookie = 'secret=' + document.getElementById("secret").value + '; expires=Sun, 1 Jan 2023 00:00:00 UTC; path=/';
+            document.cookie = 'Set-Cookie: secret=' + document.getElementById("secret").value + '; SameSite=None; Secure';
             window.location.replace("/new");
         }
         if (getCookie("secret") != null)
