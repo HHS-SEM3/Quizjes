@@ -21,7 +21,6 @@
 
         if (getCookie("secret") == null) window.location.replace("/adminlogin");
         else {
-            var socket = io();
             for (const rb of document.querySelectorAll('input[name="choice"]')) rb.checked = false;
             if ('###kind###' != '')
                 document.getElementById('###kind###').checked = true;
