@@ -4,8 +4,6 @@
 
     var fs = require('fs');
 
-    // fetir16164@maillei.net, Carucel1, tot Dec 22, 2020
-
     const secret = process.env.secret || fs.readFileSync('secret', 'utf8'); 
 
     const app = express();
@@ -24,23 +22,33 @@
     // kind = "abcd": a b c d
 
     var MongoClient = require('mongodb').MongoClient;
-    var url = "mongodb+srv://databaseuser:uPmQs9eKrp3BBmUa@mycluster.jcyct.azure.mongodb.net/mydb?retryWrites=true&w=majority";
+    var url = "mongodb+srv://databaseuser:" + (process.env.dbpass || fs.readFileSync('dbpass', 'utf8')) + "@mycluster.jcyct.azure.mongodb.net/mydb?retryWrites=true&w=majority";
     var db = await MongoClient.connect(url, {useUnifiedTopology: true});
     var dbo = db.db("mydb");
     var results = dbo.collection("results");
     var games = dbo.collection("games");
     
+    Object.defineProperty(String.prototype, 'hashCode', {
+        value: function() {
+          var hash = 0, i, chr;
+          for (i = 0; i < this.length; i++) {
+            chr   = this.charCodeAt(i);
+            hash  = ((hash << 5) - hash) + chr;
+            hash |= 0; // Convert to 32bit integer
+          }
+          return hash;
+        }
+      });
+
     io.on('connection', (socket) => {
-        console.log('a user connected');
         if (kind != "") socket.emit("start", kind);
         socket.on('send', (studentnummer, data) => {
             let i = {
                 time: (new Date()).getTime(), 
-                ip: socket.request.connection.remoteAddress, 
+                ip: ("thisissomesalt" + socket.request.connection.remoteAddress).hashCode(), 
                 studentnummer: studentnummer, 
                 data: data};
             results.insertOne(i).then(() => res.send("succes"));
-            console.log(i);
         });
         socket.on('end', (s) => {
             if (secret != s) return;
@@ -60,8 +68,7 @@
                     kind: kind
                 }).then(() => {
                     io.emit('end');
-                    io.emit('start', kind); 
-                    console.log("started");
+                    io.emit('start', kind);
                 }); 
             }
         });
@@ -80,7 +87,6 @@
 
     function reqreplace(fname) {
         return (req, res) => {
-            console.log("GET " + req.url + " from " + req.ip);
             res.set('Content-Type', 'text/html');
             if (!cache.has(fname))
                 cache.set(fname, fs.readFileSync(fname, 'utf8'));
@@ -112,7 +118,6 @@
                 {$group: {_id: "$data", aantal: {$sum: 1}}},
                 {$sort: {"aantal": -1}},
             ]).toArray();
-            console.log(datas);
             if (datas == null || datas.length == 0)
                 res.send("empty!");
             else {
