@@ -5,10 +5,6 @@
     var fs = require('fs');
 
     // fetir16164@maillei.net, Carucel1, tot Dec 22, 2020
-    // databaseuser
-    // uPmQs9eKrp3BBmUa
-
-    const nextquestioncomposer = ""; // fs.readFileSync('app/nextquestioncomposer.html', 'utf8');
 
     const secret = process.env.secret || fs.readFileSync('secret', 'utf8'); 
 
@@ -53,7 +49,7 @@
                 if ("end" in Object.keys(lastgame))
                     return;
                 lastgame.end = (new Date()).getTime();
-                games.updateOne({ "_id" : lastgame._id }, {"end": lastgame.end}).then(() => io.emit('end'));
+                games.updateOne({ "_id" : lastgame._id }, [ { $set: { "end": lastgame.end } }]).then(() => io.emit('end'));
             });
         });
         socket.on('start', (s, k) => {
@@ -124,11 +120,6 @@
                 res.send("<table>" + ("<th>" + h.join("</th><th>") + "</th>") + ("<tr>" + datas.map((d) => "<td>" + h.map((hh) => d[hh]).join("</td><td>") + "</td>").join("</tr><tr>") + "</tr>") + "</table>");
             }
     });
-
-    function access(req) {
-        return req.cookies['secret'] == secret;
-    }
-    app.get('/nextquestioncomposer', async (req, res) => res.send(access(req) ? nextquestioncomposer : "wrong secret"));
 
     http.listen(process.env.PORT || 8000); 
     console.log("Listening");

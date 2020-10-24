@@ -9,11 +9,15 @@
 </head>
 <body>
     <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 400px;">
-        <input type="radio" name="choice" id="janee"> Ja/Nee
-        <input type="radio" name="choice" id="abc"> ABC
-        <input type="radio" name="choice" id="abcd"> ABCD
-        <input type="radio" name="choice" id="woorden"> woorden
-        <input style="width: 100%;" type="text" id="time" value="###time###"></input>
+        <div style="text-align: center;"><a href="https://quizjes.herokuapp.com/">https://quizjes.herokuapp.com/</a></div>
+        <select style="width: 100%;" name="cars" id="cars">
+          <option value="janee">Ja/Nee</option>
+          <option value="abc">ABC</option>
+          <option value="abcd">ABCD</option>
+          <option value="woorden">woorden</option>
+        </select>
+        <input style="width: 50%;" type="text" id="time" value="###time###"></input>
+        <label style="width: 50%;" for="time">seconden</label>
         <button style="width: 100%;" onclick="f()">Start!</button>
     </div>
     <script>
@@ -23,15 +27,12 @@
         else {
             for (const rb of document.querySelectorAll('input[name="choice"]')) rb.checked = false;
             if ('###kind###' != '')
-                document.getElementById('###kind###').checked = true;
-            else
-                document.getElementById('abcd').checked = true;
+                document.getElementById('cars').value = '###kind###';
+            // else document.getElementById('abcd').checked = true;
         }
 
         function f() {
-            let kind;
-            for (const rb of document.querySelectorAll('input[name="choice"]')) if (rb.checked) kind = rb.id;
-            window.location.href = '/timer?kind=' + kind + '&time=' + document.getElementById("time").value;
+            window.location.href = '/timer?kind=' + document.getElementById('cars').value + '&time=' + document.getElementById("time").value;
         }
     </script>
 </body>
