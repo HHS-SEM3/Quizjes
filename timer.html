@@ -26,7 +26,7 @@
             var ending = ###time###;
             var stopped = false;
 
-            socket.emit('start', getCookie('secret'), '###time###'); 
+            socket.emit('start', getCookie('secret'), '###kind###'); 
 
             setInterval(function() {
                 var elapsedTime = (Date.now() - startTime) / 1000;

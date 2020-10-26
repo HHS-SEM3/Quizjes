@@ -4,8 +4,8 @@
 
     var fs = require('fs');
 
-    const secret = process.env.secret || fs.readFileSync('secret', 'utf8'); 
-    const salt = process.env.salt || fs.readFileSync('salt', 'utf8'); 
+    const secret = process.env.secret || fs.readFileSync('secrets/secret', 'utf8'); 
+    const salt = process.env.salt || fs.readFileSync('secrets/salt', 'utf8'); 
 
     const app = express();
     var cors = require('cors');
@@ -23,8 +23,7 @@
     // kind = "abcd": a b c d
 
     var MongoClient = require('mongodb').MongoClient;
-    console.log(process.env.dbpass);
-    var url = "mongodb+srv://databaseuser:" + (process.env.dbpass || fs.readFileSync('dbpass', 'utf8')) + "@mycluster.jcyct.azure.mongodb.net/mydb?retryWrites=true&w=majority";
+    var url = "mongodb+srv://databaseuser:" + (process.env.dbpass || fs.readFileSync('secrets/dbpass', 'utf8')) + "@mycluster.jcyct.azure.mongodb.net/mydb?retryWrites=true&w=majority";
     console.log(url);
     var db = await MongoClient.connect(url, {useUnifiedTopology: true});
     var dbo = db.db("mydb");
@@ -64,14 +63,18 @@
             });
         });
         socket.on('start', (s, k) => {
+            console.log("a");
             if (secret == s) {
+                console.log("b");
                 kind = k;
                 games.insertOne({
                     start: (new Date()).getTime(), 
                     kind: kind
                 }).then(() => {
+                    console.log("c");
                     io.emit('end');
                     io.emit('start', kind);
+                    console.log(kind);
                 }); 
             }
         });

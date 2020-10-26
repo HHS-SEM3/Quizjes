@@ -26,7 +26,7 @@
             window.location.replace("/play");
         function f() {
             let val = document.getElementById("studentid").value.trim();
-            if (val.match(/\d{4,8}/) == null)
+            if (val.match(/\d{4,9}/) == null)
                 alert("Dit is geen studentnummer!");
             else {
                 document.cookie = 'studentnummer=' + val + '; expires=max-age; path=/'
