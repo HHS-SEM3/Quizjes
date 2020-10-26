@@ -115,12 +115,20 @@
         async (req, res) => {
             let lastgame = (await games.find().sort({start: -1}).limit(1).toArray())[0];
             let datas = await results.aggregate([
+                // collect results since game started
                 {$match: {"time": {$gt: lastgame.start}}},
-                {$sort: {"time": 1}},
-                {$group: {"_id": "$studentnummer", data: {$last: "$data"}}},
-                {$project: {data: {$split: ["$data", ","]}}},
-                {$unwind: "$data"},
-                {$project: {data : {$trim: {input: "$data"}}}},
+                // if not collecting words
+                ...(lastgame.kind != "woorden" ? (
+                    [{$sort: {"time": 1}},
+                    {$group: {"_id": "$studentnummer", data: {$last: "$data"}}}]
+                ) : (
+                    [{$project: {data: {$split: ["$data", " "]}}},
+                    {$unwind: "$data"},
+                    {$project: {data : {$trim: {input: "$data"}}}},
+                    {$project: {data : {$toLower: {input: "$data"}}}},
+                    {$group: {"_id": {"studentnummer": "$studentnummer", "data": "$data"}}},
+                    {$project: {data : "$_id.data"}}]
+                )),
                 {$group: {_id: "$data", aantal: {$sum: 1}}},
                 {$sort: {"aantal": -1}},
             ]).toArray();
