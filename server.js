@@ -5,6 +5,7 @@
     var fs = require('fs');
 
     const secret = process.env.secret || fs.readFileSync('secret', 'utf8'); 
+    const salt = process.env.salt || fs.readFileSync('salt', 'utf8'); 
 
     const app = express();
     var cors = require('cors');
@@ -22,7 +23,9 @@
     // kind = "abcd": a b c d
 
     var MongoClient = require('mongodb').MongoClient;
+    console.log(process.env.dbpass);
     var url = "mongodb+srv://databaseuser:" + (process.env.dbpass || fs.readFileSync('dbpass', 'utf8')) + "@mycluster.jcyct.azure.mongodb.net/mydb?retryWrites=true&w=majority";
+    console.log(url);
     var db = await MongoClient.connect(url, {useUnifiedTopology: true});
     var dbo = db.db("mydb");
     var results = dbo.collection("results");
@@ -45,7 +48,7 @@
         socket.on('send', (studentnummer, data) => {
             let i = {
                 time: (new Date()).getTime(), 
-                ip: ("thisissomesalt" + socket.request.connection.remoteAddress).hashCode(), 
+                ip: (salt + socket.request.connection.remoteAddress).hashCode(), 
                 studentnummer: studentnummer, 
                 data: data};
             results.insertOne(i).then(() => res.send("succes"));
