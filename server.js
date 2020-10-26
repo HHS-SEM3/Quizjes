@@ -95,7 +95,7 @@
         return (req, res) => {
             res.set('Content-Type', 'text/html');
             if (!cache.has(fname))
-                cache.set(fname, fs.readFileSync(fname, 'utf8'));
+                cache.set(fname, fs.readFileSync("frontend/" + fname, 'utf8'));
             let str = cache.get(fname);
             for (var propName in req.query) {
                 if (req.query.hasOwnProperty(propName)) {
@@ -108,7 +108,7 @@
     }
 
     app.get("/", reqreplace("index.html")); 
-    for (let route of ["index", "play", "adminlogin", "new", "timer"])
+    for (let route of ["index", "play", "adminlogin", "adminlogout", "new", "timer"])
         app.get(new RegExp("^" + "\\/" + route + "(\\.html)?$"), reqreplace(route + ".html")); 
     
     app.get(/\/viewer(\.html)?/, 
