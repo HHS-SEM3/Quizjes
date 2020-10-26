@@ -44,6 +44,9 @@
     <script>
         function getCookie(name) { var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)')); if (match) return match[2]; else return null; }
 
+        if (getCookie("studentnummer") == null)
+            window.location.replace("/");
+
         var socket = io();
 
         let sent = 0;
@@ -53,8 +56,10 @@
             if (document.getElementById("woorden").style.display == "none")
                 end();
             else {
-                sent += data.split(" ").length;
-                document.getElementById("verzonden").innerText = sent + " woorden al verzonden";
+                if (data != "") {
+                    sent += data.split(" ").length;
+                    document.getElementById("verzonden").innerText = sent + " woorden al verzonden";
+                }
             }
         }
 
@@ -69,6 +74,7 @@
 
         socket.on('start', function(o) {
             end();
+            sent = 0;
             document.getElementById("wacht").style.display = 'none';
             if (o == "janee")
                 document.getElementById("janee").style.display = 'flex';

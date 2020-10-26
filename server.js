@@ -122,12 +122,12 @@
                     [{$sort: {"time": 1}},
                     {$group: {"_id": "$studentnummer", "data": {$last: "$data"}}}]
                 ) : (
-                    [{$project: {"data": {$split: ["$data", " "]}}},
+                    [
+                    {$project: {"studentnummer": "$studentnummer", "data": {$split: ["$data", " "]}}},
                     {$unwind: "$data"},
-                    {$project: {"data" : {$trim: {input: "$data"}}}},
-                    {$project: {"data" : {$toLower: "$data"}}},
-                     {$group: {"_id": {"studentnummer": "$studentnummer", "data": "$data"}}},
-                     {$project: {"data" : "$_id.data"}}
+                    {$project: {"studentnummer": "$studentnummer", "data" : {$trim: {input: {$toLower: "$data"}}}}},
+                    {$group: {"_id": {"studentnummer": "$studentnummer", "data": "$data"}}},
+                    {$project: {"data" : "$_id.data"}}
                 ]
                 )),
                 {$group: {_id: "$data", aantal: {$sum: 1}}},
