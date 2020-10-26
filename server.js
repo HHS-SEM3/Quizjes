@@ -50,7 +50,7 @@
                 ip: (salt + socket.request.connection.remoteAddress).hashCode(), 
                 studentnummer: studentnummer, 
                 data: data};
-            results.insertOne(i).then(() => res.send("succes"));
+            results.insertOne(i);
         });
         socket.on('end', (s) => {
             if (secret != s) return;
@@ -120,14 +120,15 @@
                 // if not collecting words
                 ...(lastgame.kind != "woorden" ? (
                     [{$sort: {"time": 1}},
-                    {$group: {"_id": "$studentnummer", data: {$last: "$data"}}}]
+                    {$group: {"_id": "$studentnummer", "data": {$last: "$data"}}}]
                 ) : (
-                    [{$project: {data: {$split: ["$data", " "]}}},
+                    [{$project: {"data": {$split: ["$data", " "]}}},
                     {$unwind: "$data"},
-                    {$project: {data : {$trim: {input: "$data"}}}},
-                    {$project: {data : {$toLower: {input: "$data"}}}},
-                    {$group: {"_id": {"studentnummer": "$studentnummer", "data": "$data"}}},
-                    {$project: {data : "$_id.data"}}]
+                    {$project: {"data" : {$trim: {input: "$data"}}}},
+                    {$project: {"data" : {$toLower: "$data"}}},
+                     {$group: {"_id": {"studentnummer": "$studentnummer", "data": "$data"}}},
+                     {$project: {"data" : "$_id.data"}}
+                ]
                 )),
                 {$group: {_id: "$data", aantal: {$sum: 1}}},
                 {$sort: {"aantal": -1}},
