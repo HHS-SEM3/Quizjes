@@ -144,20 +144,20 @@
                 let h = Object.keys(datas[0]); //.filter((key) => !key.startsWith("_"));
                 const html = `
                     <!doctype html>
-                        <html lang="nl">
-                        <head>
-                            <meta charset="UTF-8">
-                            <meta name="viewport"
-                                  content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-                            <meta http-equiv="X-UA-Compatible" content="ie=edge">
-                            <link rel="icon" type="image/svg" href="frontend/favicon.svg">
-                            <link rel="stylesheet" href="/cdn/css/halfmoon.min.css">
-                            <title>Resultaten</title>
-                        </head>
-                        <body class="dark-mode d-flex align-items-center justify-content-center">
-                            <div class="card">
-                                <h1 class="card-title">Resultaten</h1>
-                                <table class="table">
+                    <html lang="nl">
+                    <head>
+                        <meta charset="UTF-8">
+                        <meta name="viewport"
+                            content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+                        <meta http-equiv="X-UA-Compatible" content="ie=edge">
+                        <link rel="icon" type="image/svg" href="/favicon.svg">
+                        <link rel="stylesheet" href="/css/halfmoon.min.css">
+                        <title>Resultaten</title>
+                    </head>
+                    <body class="dark-mode d-flex align-items-center justify-content-center">
+                        <div class="card">
+                            <h1 class="card-title">Resultaten</h1>
+                            <table class="table">
                 `;
                 res.send(html + ("<thead><tr><th>" + h.join("</th><th>") + "</th></tr></thead>") + ("<tbody><tr>" + datas.map((d) => "<td>" + h.map((hh) => d[hh]).join("</td><td>") + "</td>").join("</tr><tr>") + "</tr>") + "</tbody></table></div><script src=\"/cdn/js/halfmoon.min.js\"></script></body></html>");
             }
