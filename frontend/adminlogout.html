@@ -1,6 +1,22 @@
-<!DOCTYPE html>
-<html>
-<body>
-    <button onclick="document.cookie = '';">Unset admin password</button>
+<!doctype html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/svg" href="favicon.svg">
+    <link rel="stylesheet" href="css/halfmoon.min.css">
+    <title>Admin Logout</title>
+</head>
+<body class="dark-mode d-flex align-items-center justify-content-center">
+<div class="card">
+    <h1 class="card-title">Unset admin password</h1>
+    <div class="input-group mt-15 w-full d-flex">
+            <button class="btn btn-primary" onclick="document.cookie = 'secret= ; expires = Thu, 01 Jan 1970 00:00:00 GMT'; window.location = 'adminlogin.html';">Logout</button>
+        </div>
+</div>
+
+<script src="js/halfmoon.min.js"></script>
 </body>
 </html>

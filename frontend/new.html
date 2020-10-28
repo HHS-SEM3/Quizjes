@@ -1,40 +1,43 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="nl">
 <head>
-    <style>
-        label, input, button {
-            box-sizing: border-box; 
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/svg" href="favicon.svg">
+    <link rel="stylesheet" href="css/halfmoon.min.css">
+    <title>Nieuwe Vraag</title>
 </head>
-<body>
-    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 400px;">
-        <div style="text-align: center;"><a href="https://quizjes.herokuapp.com/">https://quizjes.herokuapp.com/</a></div>
-        <select style="width: 100%;" name="cars" id="cars">
-          <option value="janee">Ja/Nee</option>
-          <option value="abc">ABC</option>
-          <option value="abcd">ABCD</option>
-          <option value="woorden">woorden</option>
-        </select>
-        <input style="width: 50%;" type="text" id="time" value="###time###"></input>
-        <label style="width: 50%;" for="time">seconden</label>
-        <button style="width: 100%;" onclick="f()">Start!</button>
-    </div>
-    <script>
-        function getCookie(name) { var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)')); if (match) return match[2]; else return null; }
+<body class="dark-mode d-flex align-items-center justify-content-center">
+<div class="card">
+    <h1 class="card-title">Nieuwe Vraag</h1>
+    <form onsubmit="f(event)">
+        <div class="form-group">
+            <label for="select-question-type">Type Vraag</label>
+            <select class="form-control" id="select-question-type">
+                <option value="" selected="selected" disabled="disabled"></option>
+                <option value="yesOrNo">Ja/Nee</option>
+                <option value="abc">ABC</option>
+                <option value="abcd">ABCD</option>
+                <option value="words">Woorden</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="time-input">Beschikbaar maken voor</label>
+            <input type="number" id="time-input" class="form-control" placeholder="1234">
+            <span>Seconden</span>
+        </div>
+        <div class="form-group w-full">
+            <input type="submit" class="btn btn-primary w-full" value="Start">
+        </div>
 
-        if (getCookie("secret") == null) window.location.replace("/adminlogin");
-        else {
-            for (const rb of document.querySelectorAll('input[name="choice"]')) rb.checked = false;
-            if ('###kind###' != '')
-                document.getElementById('cars').value = '###kind###';
-            // else document.getElementById('abcd').checked = true;
-        }
+    </form>
+    <hr>
+    <a href="https://quizjes.herokuapp.com/">https://quizjes.herokuapp.com/</a>
+</div>
 
-        function f() {
-            window.location.href = '/timer?kind=' + document.getElementById('cars').value + '&time=' + document.getElementById("time").value;
-        }
-    </script>
+<script src="js/halfmoon.min.js"></script>
+<script src="js/new.js"></script>
 </body>
-
 </html>

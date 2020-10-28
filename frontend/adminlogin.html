@@ -1,36 +1,29 @@
-<!DOCTYPE html>
-<html>
+<!doctype html>
+<html lang="nl">
 <head>
-    <style>
-        label, input, button {
-            box-sizing: border-box; 
-            width: 100%;
-            display:block;
-        }
-    </style>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/svg" href="favicon.svg">
+    <link rel="stylesheet" href="css/halfmoon.min.css">
+    <title>Admin Login</title>
 </head>
-<body>
-    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 400px;">
-        <label for="secret">Geheim: </label>
-        <input id="secret" type="password"></input>
-        <button id="go" onclick="f()">Set admin password</button>
-    </div>
-    <script>
-        function getCookie(name) { var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)')); if (match) return match[2]; else return null; }
+<body class="dark-mode d-flex align-items-center justify-content-center">
+<div class="card">
+    <h1 class="card-title">Admin Login</h1>
+    <form onsubmit="f()">
+        <label for="secret">Password: </label>
+        <div class="input-group w-200">
+            <input class="form-control" type="password" id="secret" required/>
+        </div>
+        <div class="input-group mt-15 w-full d-flex justify-content-end">
+            <input class="btn btn-primary" type="submit" value="Set admin password">
+        </div>
+    </form>
+</div>
 
-        function f(val) {
-            document.cookie = 'Set-Cookie: secret=' + document.getElementById("secret").value + '; SameSite=None; Secure';
-            window.location.replace("/new");
-        }
-        if (getCookie("secret") != null)
-            window.location.replace("/new");
-        
-        document.querySelector("#secret").addEventListener("keyup", event => {
-            if(event.key !== "Enter") return; 
-            document.querySelector("#go").click(); 
-            event.preventDefault(); 
-        });
-    </script>
+<script src="js/halfmoon.min.js"></script>
+<script src="js/adminlogin.js"></script>
 </body>
-
 </html>

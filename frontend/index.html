@@ -1,38 +1,28 @@
-<!DOCTYPE html>
-<html lang="en">
-
+<!doctype html>
+<html lang="nl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="icon" type="image/svg" href="favicon.svg">
+    <link rel="stylesheet" href="css/halfmoon.min.css">
     <title>Quizjes</title>
-    <style>
-        label, input, button {
-            box-sizing: border-box; 
-            width: 100%;
-            display:block;
-        }
-    </style>
 </head>
-
-<body style="height:100vh; position: relative;">
-    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; max-width: 400px;">
-        <label for="studentid">Student ID: </label>
-        <input type="text" id="studentid" onkeyup="if (event.keyCode == 13) document.getElementById('but').click()"></input>
-        <button id="but" onclick="f()">Login</button>
+<body class="dark-mode d-flex align-items-center justify-content-center">
+    <div class="card">
+        <form onsubmit="f()">
+            <label for="studentid" class="card-title">Student ID: </label>
+            <div class="input-group w-200">
+                <input class="form-control" type="text" id="studentid" required/>
+            </div>
+            <div class="input-group mt-15 w-full d-flex justify-content-end">
+                <input class="btn btn-primary" type="submit" value="Login">
+            </div>
+        </form>
     </div>
-    <script>
-        function getCookie(name) { var match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)')); if (match) return match[2]; else return null; }
-        if (getCookie("studentnummer") != null)
-            window.location.replace("/play");
-        function f() {
-            let val = document.getElementById("studentid").value.trim();
-            if (val.match(/\d{4,9}/) == null)
-                alert("Dit is geen studentnummer!");
-            else {
-                document.cookie = 'studentnummer=' + val + '; expires=max-age; path=/'
-                window.location.replace("/play");
-            }
-        }
-    </script>
+
+    <script src="js/halfmoon.min.js"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>
