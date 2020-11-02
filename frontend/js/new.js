@@ -3,9 +3,12 @@ function getCookie(name) {
     if (match) return match[2]; else return null;
 }
 
-if (getCookie("secret") == null) window.location.replace("adminlogin.html");
+if (getCookie("secret") == null) window.location.href = "adminlogin.html";
 
 function f(e) {
     e.preventDefault();
-    window.location ='timer.html?kind=' + document.getElementById('select-question-type').value + '&time=' + document.getElementById("time-input").value;
+    let kind = document.getElementById('select-question-type').value;
+    if (kind == 'codegolfjs')
+        kind += '-' + document.getElementById('bestand-input').value;
+        window.location.href = 'timer.html?kind=' + kind + '&time=' + document.getElementById("time-input").value;
 }

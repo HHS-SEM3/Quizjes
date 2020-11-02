@@ -7,6 +7,18 @@ const socket = io();
 let sent = 0;
 
 function senddata(data) {
+    if (document.getElementById("codegolfjs").style.display !== "none") {
+        try {
+            eval.call(window, document.getElementById("jscode").value);
+            if (!go()) {
+                alert("Fout! Je code doet niet precies hetzelfde als de oorspronkelijke code. Probeer opnieuw. ");
+                return;
+            }
+          } catch (error) {
+            alert("Fout! Je code doet het niet. ");
+            return;
+          }
+    }
     socket.emit('send', getCookie("studentnummer"), data);
     if (document.getElementById("woorden").style.display === "none")
         end();
@@ -23,6 +35,7 @@ function end() {
     document.getElementById("opts").style.display = 'none';
     document.getElementById("janee").style.display = 'none';
     document.getElementById("woorden").style.display = 'none';
+    document.getElementById("codegolfjs").style.display = 'none';
 }
 
 socket.on('end', end);
@@ -35,6 +48,14 @@ socket.on('start', function(o) {
         document.getElementById("janee").style.display = 'block';
     else if (o === "woorden")
         document.getElementById("woorden").style.display = 'block';
+    else if (o.startsWith("codegolfjs")) {
+        let url = o.substr("codegolfjs-".length);
+        var scriptTag = document.createElement("script");
+        scriptTag.onload = (e) => document.getElementById("codegolfjs").style.display = 'block';
+        scriptTag.type = "text/javascript";
+        scriptTag.src = url;
+        document.getElementsByTagName("head")[0].appendChild(scriptTag);
+    }
     else {
         if (o === "ab") o = 2;
         else if (o === "abc") o = 3;

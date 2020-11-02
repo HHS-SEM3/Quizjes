@@ -23,6 +23,7 @@
     // kind = "woorden": woorden -> steeds opnieuw
     // kind = "abc": a b c
     // kind = "abcd": a b c d
+    // kind = "codegolfjs-https://wpfw.imfast.io/vieropeenrijtest.js": a codegolf js game, with this js as tester
 
     var MongoClient = require('mongodb').MongoClient;
     var url = "mongodb+srv://databaseuser:" + (process.env.dbpass || fs.readFileSync('secrets/dbpass', 'utf8')) + "@mycluster.jcyct.azure.mongodb.net/mydb?retryWrites=true&w=majority";
@@ -82,39 +83,6 @@
             }
         });
     });
-
-    /*
-    var cache = new Map();
-
-    function replaceAll(str, a, b) {
-        let prev = ""
-        while (prev != str) {
-            prev = str;
-            str = str.replace(a, b);
-        }
-        return str;
-    }
-
-    function reqreplace(fname) {
-        return (req, res) => {
-            res.set('Content-Type', 'text/html');
-            if (!cache.has(fname))
-                cache.set(fname, fs.readFileSync("frontend/" + fname, 'utf8'));
-            let str = cache.get(fname);
-            for (var propName in req.query) {
-                if (req.query.hasOwnProperty(propName)) {
-                    str = replaceAll(str, "###" + propName + "###", req.query[propName]);
-                }
-            }
-            str = replaceAll(str, /###[^#]+###/g, "");
-            res.send(str);
-        };
-    }
-
-    app.get("/", reqreplace("index.html")); 
-    for (let route of ["index", "play", "adminlogin", "adminlogout", "new", "timer"])
-        app.get(new RegExp("^" + "\\/" + route + "(\\.html)?$"), reqreplace(route + ".html")); 
-    */
     
     app.get(/\/viewer(\.html)?/, 
         async (req, res) => {
@@ -122,21 +90,32 @@
             let datas = await results.aggregate([
                 // collect results since game started
                 {$match: {"time": {$gt: lastgame.start}}},
-                // if not collecting words
-                ...(lastgame.kind != "woorden" ? (
-                    [{$sort: {"time": 1}},
-                    {$group: {"_id": "$studentnummer", "data": {$last: "$data"}}}]
-                ) : (
+                ...(lastgame.kind == "woorden" ?
                     [
-                    {$project: {"studentnummer": "$studentnummer", "data": {$split: ["$data", " "]}}},
-                    {$unwind: "$data"},
-                    {$project: {"studentnummer": "$studentnummer", "data" : {$trim: {input: {$toLower: "$data"}}}}},
-                    {$group: {"_id": {"studentnummer": "$studentnummer", "data": "$data"}}},
-                    {$project: {"data" : "$_id.data"}}
-                ]
-                )),
-                {$group: {_id: "$data", aantal: {$sum: 1}}},
-                {$sort: {"aantal": -1}},
+                        {$project: {"studentnummer": "$studentnummer", "data": {$split: ["$data", " "]}}},
+                        {$unwind: "$data"},
+                        {$project: {"studentnummer": "$studentnummer", "data" : {$trim: {input: {$toLower: "$data"}}}}},
+                        {$group: {"_id": {"studentnummer": "$studentnummer", "data": "$data"}}},
+                        {$project: {"data" : "$_id.data"}}
+                    ]
+                :
+                    [
+                        {$sort: {"time": 1}},
+                        {$group: {"_id": "$studentnummer", "data": {$last: "$data"}}}
+                    ]
+                ),
+                ...(lastgame.kind.startsWith("codegolfjs") ?
+                    [
+                        {$project: {len: { $strLenCP: "$data" }, data: "$data"}},
+                        {$sort: {"len": 1}},
+                        { $unset: "_id" }
+                    ]
+                :
+                    [
+                        {$group: {_id: "$data", aantal: {$sum: 1}}},
+                        {$sort: {"aantal": -1}}
+                    ]
+                )
             ]).toArray();
             if (datas == null || datas.length == 0)
                 res.send("empty!");
@@ -152,6 +131,9 @@
                         <meta http-equiv="X-UA-Compatible" content="ie=edge">
                         <link rel="icon" type="image/svg" href="/favicon.svg">
                         <link rel="stylesheet" href="/css/halfmoon.min.css">
+                        <style>
+                            td div { max-height: 5em; overflow: auto; }
+                        </style>
                         <title>Resultaten</title>
                     </head>
                     <body class="dark-mode d-flex align-items-center justify-content-center">
@@ -159,7 +141,7 @@
                             <h1 class="card-title">Resultaten</h1>
                             <table class="table">
                 `;
-                res.send(html + ("<thead><tr><th>" + h.join("</th><th>") + "</th></tr></thead>") + ("<tbody><tr>" + datas.map((d) => "<td>" + h.map((hh) => d[hh]).join("</td><td>") + "</td>").join("</tr><tr>") + "</tr>") + "</tbody></table></div><script src=\"/cdn/js/halfmoon.min.js\"></script></body></html>");
+                res.send(html + ("<thead><tr><th>" + h.join("</th><th>") + "</th></tr></thead>") + ("<tbody><tr>" + datas.map((d) => h.map((hh) => "<td><div>" + ("" + d[hh]).replace(/\n/g, "<br/>") + "</div></td>").join("")).join("</tr><tr>") + "</tr>") + "</tbody></table></div><script src=\"js/halfmoon.min.js\"></script></body></html>");
             }
     });
 

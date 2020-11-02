@@ -15,13 +15,18 @@
     <form onsubmit="f(event)">
         <div class="form-group">
             <label for="select-question-type">Type Vraag</label>
-            <select class="form-control" id="select-question-type">
+            <select class="form-control" id="select-question-type" onchange="document.getElementById('extra').style.display =  (document.getElementById('select-question-type').value == 'codegolfjs' ? 'block' : 'none')">
                 <option value="" selected="selected" disabled="disabled"></option>
                 <option value="yesOrNo">Ja/Nee</option>
                 <option value="abc">ABC</option>
                 <option value="abcd">ABCD</option>
                 <option value="words">Woorden</option>
+                <option value="codegolfjs">Codegolf JS</option>
             </select>
+        </div>
+        <div class="form-group" id="extra" style="display:none">
+            <label for="bestand-input">Bestand: </label>
+            <input id="bestand-input" class="form-control" placeholder="http://...">
         </div>
         <div class="form-group">
             <label for="time-input">Beschikbaar maken voor</label>

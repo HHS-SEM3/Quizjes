@@ -47,6 +47,19 @@
             <button type="button" class="btn btn-primary" onclick="senddata(document.getElementById('tekst').value);document.getElementById('tekst').value='';">Verstuur</button>
         </div>
     </div>
+    
+    <div class="card w-half" id="codegolfjs" style="display: none;">
+        <h1 class="card-title">JS-code</h1>
+        <div class="input-group">
+            <textarea class="form-control" id="jscode" placeholder="Text input"></textarea>
+        </div>
+        <div class="form-group mt-10 mb-10">
+            <span id="verzonden"></span>
+        </div>
+        <div class="input-group mt-15">
+            <button type="button" class="btn btn-primary" onclick="senddata(document.getElementById('jscode').value);">Verstuur</button>
+        </div>
+    </div>
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.1/socket.io.js" integrity="sha512-AcZyhRP/tbAEsXCCGlziPun5iFvcSUpEz2jKkx0blkYKbxU81F+iq8FURwPn1sYFeksJ+sDDrI5XujsqSobWdQ==" crossorigin="anonymous"></script>

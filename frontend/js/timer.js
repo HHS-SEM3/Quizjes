@@ -39,5 +39,5 @@ else {
 
 function stop() {
     socket.emit('end', getCookie('secret'));
-    window.location.href = 'viewer';
+    window.location.replace('viewer');
 }
